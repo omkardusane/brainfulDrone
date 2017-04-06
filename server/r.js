@@ -1,12 +1,16 @@
-// app.js
+const config = require('./modules/config.js');
+const mocks = require('./modules/mocks.nonPi.js');
+
 var express = require('express');  
 var app = express();  
 var server = require('http').createServer(app);  
 var io = require('socket.io')(server);
 var ip = require('ip');
+
 let PORT = 9000 ;
 
-let motor = require('./modules/motor-shim.js')
+let motor = config.isPi? require('./modules/motor-shim.js'):mocks.motor;
+let gyro = config.isPi? require('./modules/gyro-shim.js'):mocks.gyro;
 
 app.use(express.static(__dirname + '/public'));  
 app.get('/', function(req, res,next) {      
@@ -42,33 +46,48 @@ io.on('connection', function(client) {
 
     client.on('init-motor', function(data) {
         console.log(data);
+        motor.throttle('all',9,res,()=>{
+            if(res.ok){
+                statusUpdate('Motors Ready');        
+            }else{
+                statusUpdate('Issue initializing the Motors');
+            }
+        });
     });
 
     client.on('stop-motor', function(data) {
         console.log(data);
-        statusUpdate('Stopped');
+        motor.throttle('all',9,res,()=>{
+            if(res.ok){
+                statusUpdate('Stopped');        
+            }else{
+                statusUpdate('Issue stopping the Motor');
+            }
+        });
     });
 
     client.on('speed-motor', function(data) {
         if(isNaN(data.payload)==false){
             let val = Number(data.payload);
-            motor.thr = val;
-            console.log('Throttle set to '+val)
-            if(val==9){
-                 statusUpdate('Started , increase throttle from below');
-            }else{
-                statusUpdate('Throttle is '+val);
-            }
+            //motor.all.throttle = val;
+            motor.throttle('all',val,res,()=>{
+                console.log('Throttle set to '+val)
+                if(!res.ok){
+                    statusUpdate('Last Throttle invalid')
+                }else if(val==9){
+                    statusUpdate('Started , increase throttle from below');
+                }else{
+                    statusUpdate('Throttle is '+val);
+                }
+            });
         }
-
     });
     
     client.on('disconnect', function() { i--; }); 
-
 });
 
-
-server.listen(PORT,()=>{
-    console.log('Rutvik Server Running on: http://'+ip.address()+':'+PORT);
-    
-});  
+motor.init(()=>{
+    server.listen(PORT,()=>{
+        console.log('Rutvik Server Running on: http://'+ip.address()+':'+PORT);    
+    });
+});
