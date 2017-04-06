@@ -1,0 +1,16 @@
+{
+  "name": "gyro",
+  "version": "1.0.0",
+  "description": "",
+  "main": "mod.js",
+  "dependencies": {
+    "johnny-five": "^0.10.6",
+    "raspi-io": "^7.2.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

@@ -1,0 +1,49 @@
+<div>
+    <h3>  Status:</h3> <h1>  {{status}} </h1>
+    <div class="coulmn"> 
+        <input ng-click="init()" type="button" class="btn btn-primary" value="INITIALIZE">
+    </div> 
+    <div class="coulmn"  ng-if="state.init" > 
+        <input ng-click="sendValue(9)" type="button" class="btn btn-primary" value="START">
+        <input ng-click="autoDownMode()" type="button" class="btn btn-primary" value="AUTO DOWN OFF" ng-if="state.auto">
+        <input ng-click="autoDownMode()" type="button" class="btn btn-warning" value="AUTO DOWN ON" ng-if="!state.auto">
+    </div> 
+    <br />
+    <div ng-if="state.started">
+        <div class="coulmn"> 
+            <input ng-click="sendValue(10)" type="button" class="btn btn-primary" value="10">
+            <input ng-click="sendValue(15)" type="button" class="btn btn-primary" value="15">
+            <input ng-click="sendValue(20)" type="button" class="btn btn-primary" value="20">
+            <input ng-click="sendValue(30)" type="button" class="btn btn-primary" value="30">
+        </div> 
+
+        <div class="coulmn"> 
+            <input ng-click="sendValue(35)" type="button" class="btn btn-info" value="35">
+            <input ng-click="sendValue(37)" type="button" class="btn btn-info" value="37">
+            <input ng-click="sendValue(39)" type="button" class="btn btn-info" value="39">
+            <input ng-click="sendValue(41)" type="button" class="btn btn-info" value="41">
+            <input ng-click="sendValue(43)" type="button" class="btn btn-info" value="43">
+        </div> 
+        <br />
+        <br />    
+        <div class="coulmn"> 
+            <input ng-click="sendValue(45)" type="button" class="btn btn-warning" value="45">
+            <input ng-click="sendValue(47)" type="button" class="btn btn-warning" value="47">
+            <input ng-click="sendValue(49)" type="button" class="btn btn-warning" value="49">
+            <input ng-click="sendValue(50)" type="button" class="btn btn-warning" value="50">
+
+        </div> 
+        <div class="coulmn"> 
+            <input ng-click="sendValue(55)" type="button" class="btn btn-danger" value="55">
+            <input ng-click="sendValue(60)" type="button" class="btn btn-danger" value="60">
+            <input ng-click="sendValue(65)" type="button" class="btn btn-danger" value="65">
+        </div>
+        <br />
+        
+        <div class="coulmn"> 
+           
+            <input ng-click="stop()" type="button" class="btn btn-danger" value="STOP">
+
+        </div>
+    </div>
+</div>

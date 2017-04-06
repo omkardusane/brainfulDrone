@@ -1,0 +1,15 @@
+{
+  "name": "motor_pwm",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "raspi": "^3.0.5",
+    "raspi-pwm": "^3.1.3"
+  }
+}
