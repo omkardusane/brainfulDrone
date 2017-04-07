@@ -69,7 +69,7 @@ let self ={
     throttle:(selected,speed,res,next)=>{
         if(!res) res = {};        
         if(speed>=9 && speed<=99){
-            self.pwm[selected].interface.write()
+            self.pwm[selected].interface.write(speed)
             res=({ok:true,message:'accepted this throttle'});
         }else{
             res=({ok:false,message:'invalid throttle'});
