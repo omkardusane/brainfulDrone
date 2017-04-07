@@ -1,18 +1,17 @@
 let app = angular.module('rutvik',['ngRoute']);
 app.config(function($routeProvider) {
-  $routeProvider
+    $routeProvider
     .when("/gyro", {
-      templateUrl: 'pages/gyro.html',
-      controller: 'gyroCtrl'
+        templateUrl: 'pages/gyro.html',
+        controller: 'gyroCtrl'
     })
     .when("/", {
-      templateUrl: 'pages/main.html',
-      controller: 'main'
+        templateUrl: 'pages/main.html',
+        controller: 'main'
     })
-    
     ;
-   
 });
+
 app.controller('main',function($scope){
     $scope.status = 'Not Connected';
     $scope.state = {auto:false , init:false , started:false};
@@ -27,7 +26,7 @@ app.controller('main',function($scope){
             $scope.$digest();
     });
     socket.on('msg-client',(msg)=>{
-           console.log(msg);
+            console.log(msg);
     });
     $scope.init = ()=>{
         $scope.state.init = true;

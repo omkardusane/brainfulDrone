@@ -45,14 +45,51 @@ let self ={
             console.log('success: motor interfaces initialized');
         });
     },
-    throttle:(selected,speed,res)=>{
+    testInit:(allOne,next)=>{
+        raspi.init(() => {
+            if(allOne){
+                console.log('initializing AllOne motor interfaces')
+                motorPWMInitializer(self.pwm.all);
+            }else{
+                console.log('initializing Indipendent motor interfaces')
+                independentMotorsInitialize(self.pwm)
+            }
+            next();
+            console.log('success: motor interfaces initialized');
+        });
+    },
+    halt:(selected)=>{
+        self.pwm[selected].interface.write(9);
+    },
+    multiHalt:(selected)=>{
+        selected.forEach(i=>{
+           self.pwm[i].interface.write(9);
+        });
+    },
+    throttle:(selected,speed,res,next)=>{
+        if(!res) res = {};        
         if(speed>=9 && speed<=99){
             self.pwm[selected].interface.write()
             res=({ok:true,message:'accepted this throttle'});
         }else{
             res=({ok:false,message:'invalid throttle'});
         }
+        if(next)
+        next();
     },
+    multiThrottle:(selected,speed,res,next)=>{
+        if(!res) res = {};
+        if(speed>=9 && speed<=99){
+            selected.forEach(i=>{
+                 self.pwm[i].interface.write(speed);
+            });
+            res=({ok:true,message:'accepted this throttle'});
+        }else{
+            res=({ok:false,message:'invalid throttle'});
+        }
+        if(next)
+        next();
+    }
     
 }
 

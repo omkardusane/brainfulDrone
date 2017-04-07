@@ -5,3 +5,4 @@ node_modules
 /*/npm-debug.*
 */npm-debug.*
 
+.vscode-upload.json
