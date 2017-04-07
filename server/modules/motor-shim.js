@@ -54,8 +54,8 @@ let self ={
                 console.log('initializing Indipendent motor interfaces')
                 independentMotorsInitialize(self.pwm)
             }
-            next();
             console.log('success: motor interfaces initialized');
+            next();
         });
     },
     halt:(selected)=>{

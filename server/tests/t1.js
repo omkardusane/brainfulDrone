@@ -8,27 +8,33 @@ if(process.argv[2]){
     motor.testInit(false,()=>{
         let res = {};
         
+        console.log('Throttle 1 at 10')
         motor.throttle('1',10);
         delay(500);
         motor.halt('1');    
 
+        console.log('Throttle 2 at 10')
         motor.throttle('2',10);
         delay(500);  
         motor.halt('2');    
           
         
+        console.log('Throttle 3 at 10')
         motor.throttle('3',10);
         delay(500);    
         motor.halt('3');    
 
+        console.log('Throttle 4 at 10')
         motor.throttle('4',10);
         delay(500);    
         motor.halt('4');    
         
+        console.log('Throttle all at 10')
         motor.multiThrottle(all,10);
         delay(500);    
         motor.multiHalt(all);
         
+        console.log('Done')
     });
 }else{
     console.log('No speed provided')
