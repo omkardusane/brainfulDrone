@@ -105,6 +105,11 @@ return {
                 if($scope.name.includes(":")){ 
                     $scope.$parent.sendValue($scope.name.split(":")[0],$scope.val);
                     $scope.$parent.sendValue($scope.name.split(":")[1],$scope.val);
+                    if($scope.name.split(":")[1] == "3"){
+                        $scope.$parent.value3 = $scope.val;
+                    }else if($scope.name.split(":")[1] == "4"){
+                        $scope.$parent.value4 = $scope.val;
+                    }
                 }else{
                     $scope.$parent.sendValue($scope.name,$scope.val);
                 }
