@@ -13,11 +13,12 @@ let motor = config.isPi? require('./modules/motor-shim.js'):mocks.motor;
 let gyro = config.isPi? require('./modules/gyro-shim.js'):mocks.gyro;
 
 let socketHandleV1 =  require('./modules/v1.js') ;
-let socketHandleV1 =  require('./modules/v2.js') ;
+let socketHandleV2 =  require('./modules/v2.js') ;
+let socketHandleV3 =  require('./modules/v3.js') ;
 
-let socketHandle = socketHandleV1 ;
+let socketHandle = socketHandleV3 ;
 socketHandle.setReferences(motor);
-io.on('connection', socketHandle);
+io.on('connection', socketHandle.socketHandle);
 
 motor.init(()=>{
     app.use(express.static(__dirname + '/public'));  

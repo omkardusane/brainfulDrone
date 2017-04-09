@@ -4,12 +4,20 @@ module.exports ={
             console.log('----- Mock Motor ------')
             next()
         },
-        throttle:(selected,speed,res)=>{
-            if(speed>=9 && speed<=99){
-                res=({ok:true,message:'accepted this throttle'});
-            }else{
-                res=({ok:false,message:'invalid throttle'});
-            }
+    
+        halt:(selected)=>{
+         
+        },
+        multiHalt:(selected)=>{
+
+        },
+        throttle:(selected,speed,res,next)=>{
+            if(next)
+            next();
+        },
+        multiThrottle:(selected,speed,res,next)=>{
+            if(next)
+            next();
         }
 
     },
