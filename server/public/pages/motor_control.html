@@ -64,47 +64,95 @@ body {
   top:-100%;
 }
 </style>
- <div class="container" >
-      <div class="row" align="center">
-      
-      <div class="element-container" md-whiteframe="10" ng-init="value1=36">
-        <div>Motor 1: {{value1}}</div>
-        <md-num-picker ng-model="value1" 
-                       min-value="36" 
-                       max-value="255"
-                       name="1"
-                       ></md-num-picker>
-      </div>
-      
-      <div class="element-container" md-whiteframe="10" ng-init="value2=36">
-        <div>Motor 2: {{value2}}</div>
-        <md-num-picker ng-model="value2" 
-                       min-value="36" 
-                       max-value="255"
-                       name="2"
-                       ></md-num-picker>
-      </div>
-      <div class="element-container" md-whiteframe="10" ng-init="value3=36">
-        <div>Motor 3: {{value3}}</div>
-        <md-num-picker ng-model="value3" 
-                       min-value="36" 
-                       max-value="255"
-                       name="3"
-                       ></md-num-picker>
-      </div>
-      <div class="element-container" md-whiteframe="10" ng-init="value4=36">
-        <div>Motor 4: {{value4}}</div>
-        <md-num-picker ng-model="value4" 
-                       min-value="36" 
-                       max-value="255"
-                       name="4"
-                      ></md-num-picker>
-      </div>
-      </div>
+         <div class="row">
+            <div class="container">
+              <h2>Configuration Panel</h2>
+              <hr/>
+                <div class="row">
+                  <div class="col-lg-3" style="float:left;">
+                      <div class="form-group">
+                        <label for="sel1">Choose delta:</label>
+                        <select class="form-control" ng-model="deltaValue">
+                          <option value="1" ng-selected="true">1</option>
+                          <option value="5">5</option>
+                          <option value="10">10</option>
+                          <option value="15">15</option>
+                        </select>
+                      </div>                     
+                  </div>
+                  <div class="col-lg-3">
+                      <div class="form-group">
+                        <label for="sel1">Global Change:</label>
+                        <input class="form-control" type="text" placeholder="Enter value between 37 - 255" ng-model="globalValue">
+                        <button type="button" class="btn btn-success" style="width: 100%; margin-top: 5px;" ng-click="globalValueApply()">Apply</button>
+                      </div>                      
+                  </div>
+                  <div class="col-lg-3">       
+                    <div>
+                       <label>Global Controlls</label>
+                    </div>
+                    <div> 
+                      <div style="float:left;"><button type="button" class="btn btn-success" ng-click="globalIncrementer()" style="height: 90px;width: 90px;"> + </button></div>
+                      <div style="float:right;"><button type="button" class="btn btn-danger" ng-click="globalDecrementer()" style="height: 90px;width: 90px;"> - </button></div>
+                    </div>  
+                  </div>  
+                  <div class="col-lg-3">        
+                      <button type="button" class="btn btn-danger" ng-click="stop()" style="margin-top: 20%;">Shutdown all motors! </button>            
+                  </div>                  
+                </div>  
+            </div>         
+         </div>
+         <hr/>
+         <div class="row" align="center">
+                <div class="col-lg-3">
+                    <div class="element-container" md-whiteframe="10" ng-init="value1=36" >
+                      <div><b>Motor 1: </b>{{value1}}</div>
+                      <md-num-picker ng-model="value1" 
+                                     min-value="36" 
+                                     max-value="255"
+                                     name="1"
+                                     somethings="someScope"
+                                     deltaValue="1"
+                                     ></md-num-picker>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                  <div class="element-container" md-whiteframe="10" ng-init="value2=36">
+                    <div><b>Motor 2:</b> {{value2}}</div>
+                    <md-num-picker ng-model="value2" 
+                                   min-value="36" 
+                                   max-value="255"
+                                   name="2"
+                                   deltaValue="1"
+                                   ></md-num-picker>
+                  </div>
+                </div>
+                <div class="col-lg-3">  
+                  <div class="element-container" md-whiteframe="10" ng-init="value3=36">
+                    <div><b>Motor 3:</b> {{value3}}</div>
+                    <md-num-picker ng-model="value3" 
+                                   min-value="36" 
+                                   max-value="255"
+                                   name="3"
+                                   deltaValue="1"
+                                   ></md-num-picker>
+                  </div>
+                 </div>
+                <div class="col-lg-3">  
+                <div class="element-container" md-whiteframe="10" ng-init="value4=36">
+                  <div><b>Motor 4:</b> {{value4}}</div>
+                  <md-num-picker ng-model="value4" 
+                                 min-value="36" 
+                                 max-value="255"
+                                 name="4"
+                                 deltaValue="1"
+                                ></md-num-picker>
+                </div>
+                </div>
+            </div>    
       <div class="row">
         <div class="col-lg-12">
-           <button type="button" class="btn btn-danger" ng-click="stop()">Danger</button>
+          
         </div>
       </div>
-      
-    </div>
+
