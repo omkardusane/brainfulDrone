@@ -27,7 +27,15 @@ module.exports =  {
         client.on('speed-motor', function(data) {
             console.log("speed-motor ",data)
             if(data.payload.motorNumber != undefined && data.payload.value!= undefined){
-               motor.throttle(Number(data.payload.motorNumber),Number(data.payload.value));
+                if(data.payload.value<0){
+                    motor.throttle(Number(data.payload.motorNumber),1);
+
+                }else if(data.payload.value > 255){
+                    motor.throttle(Number(data.payload.motorNumber),255);
+
+                }else{
+                    motor.throttle(Number(data.payload.motorNumber),Number(data.payload.value));
+                }
             }else{
                console.log("Error in receiving data");
             }
