@@ -11,12 +11,7 @@ var wire = new i2c(address, {device: '/dev/i2c-1'}); // point to your i2c addres
 //console.log(o);
 //wire.write(JSON.stringify(o), function(err) {});
 
-// let a = Number(process.argv[2]);
-// let b = Number(process.argv[3]);
-// let c = Number(process.argv[4]);
-// let d = Number(process.argv[5]);
-
-let arr = [101,3,0] ;
+let arr = [102,100] ;
 wire.write(arr,function(err) {
     console.log('sent : ',arr);
 });
@@ -29,9 +24,10 @@ wire.write(arr,function(err) {
 
 
  
-// wire.on('data', function(data) {
-//   // result for continuous stream contains data buffer, address, length, timestamp 
-// });
+wire.on('data', function(data) {
+   // result for continuous stream contains data buffer, address, length, timestamp 
+   console.log('data');
+});
  
  
 //wire.write([byte0, byte1], function(err) {});

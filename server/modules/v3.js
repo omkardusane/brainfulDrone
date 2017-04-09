@@ -1,7 +1,5 @@
 let motor = null;
 let i=0;
-let all = ['1','2','3','4'];
-
 module.exports =  {
     setReferences: (m)=>{
         motor = m ;
@@ -20,45 +18,18 @@ module.exports =  {
             console.log(data);
         });
         
-        client.on('msg-motor', function(data) {
-            console.log(data);
-            if(data.auto == '1'){
-                motor.auto = true;
-            }else if(data.auto == '0'){
-                motor.auto = false;
-            }
-
-        });
-
-        client.on('init-motor', function(data) {
-            console.log(data);
-            res = {};
-            motor.multiThrottle(9,res,()=>{
-                if(res.ok){
-                    statusUpdate('Motors Ready');        
-                }else{
-                    statusUpdate('Issue initializing the Motors');
-                }
-            });
-        });
-
         client.on('stop-motor', function(data) {
-            console.log(data);
-            res = {};
-            motor.multiThrottle(all,9,res,()=>{
-                if(res.ok){
-                    statusUpdate('Stopped');        
-                }else{
-                    statusUpdate('Issue stopping the Motor');
-                }
-            });
+            console.log('stop-motor');
+            motor.haltAll();
+            statusUpdate('Stopped');          
         });
 
         client.on('speed-motor', function(data) {
+            console.log("speed-motor ",data)
             if(data.payload.motorNumber != undefined && data.payload.value!= undefined){
-                console.log(data);
+               motor.throttle(Number(data.payload.motorNumber),Number(data.payload.value));
             }else{
-                console.log("Error in receiving data");
+               console.log("Error in receiving data");
             }
         });
         

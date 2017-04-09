@@ -5,10 +5,13 @@
   "main": "r.js",
   "dependencies": {
     "express": "^4.15.2",
+    "i2c": "^0.2.3",
     "ip": "^1.1.5",
-    "socket.io": "^1.7.3",
+    "johnny-five": "^0.10.7",
     "raspi": "^3.0.5",
-    "raspi-pwm": "^3.1.3"
+    "raspi-io": "^7.3.1",
+    "raspi-pwm": "^3.1.3",
+    "socket.io": "^1.7.3"
   },
   "devDependencies": {},
   "scripts": {

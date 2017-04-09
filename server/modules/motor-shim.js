@@ -5,7 +5,6 @@ const config = require('./config.js');
 
 let self ={
     auto : false,
-    
     pwm : {
         'all':{
             pin:'GPIO18',

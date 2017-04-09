@@ -20,7 +20,7 @@ app.controller('main',function($scope){
     $scope.status = 'Not Connected';
     $scope.state = {auto:false , init:false , started:false};
     $scope.autoDownMode = ()=>{$scope.state.auto=!$scope.state.auto};
-    var socket = io.connect(window.location.host);
+    //var socket = io.connect(window.location.host);
     socket.on('connect', function(data) {
         socket.emit('join', 'Hello World from client');
     });
@@ -84,10 +84,10 @@ return {
         }
 
 })
+var socket = io.connect(window.location.host);
 app.controller('MotorControlCtrl',function($scope){
     console.log('Motor Controller Loaded');
 
-            var socket = io.connect(window.location.host);
             $scope.sendValue = (motorNumber,val)=>{
                 console.log({value : val});
                 socket.emit('speed-motor', {payload:{motorNumber : motorNumber, value : val},message:'speed change'});
@@ -95,7 +95,7 @@ app.controller('MotorControlCtrl',function($scope){
 
 
             $scope.stop = ()=>{
-                $scope.state.started= false;
+               // $scope.state.started= false;
                 socket.emit('stop-motor', {message:'stop motor'});
             }            
            $scope.incVal = function(){
