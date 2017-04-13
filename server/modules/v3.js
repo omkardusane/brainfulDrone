@@ -26,16 +26,15 @@ module.exports =  {
 
         client.on('speed-motor', function(data) {
             console.log("speed-motor ",data)
-            if(data.payload.motorNumber != undefined && data.payload.value!= undefined){
+            if(data.payload && data.payload.motorNumber && data.payload.value  && !isNaN(data.payload.value)){
                 if(data.payload.value<0){
-                    motor.throttle(Number(data.payload.motorNumber),1);
-
+                    data.payload.value = 0 ;
                 }else if(data.payload.value > 255){
-                    motor.throttle(Number(data.payload.motorNumber),255);
-
-                }else{
-                    motor.throttle(Number(data.payload.motorNumber),Number(data.payload.value));
+                    data.payload.value = 255 ;
                 }
+                motor.throttle(Number(data.payload.motorNumber),Number(data.payload.value),()=>{
+                    console.log("Single Throttle : ",data.payload.value)
+                });
             }else{
                console.log("Error in receiving data");
             }
@@ -43,14 +42,36 @@ module.exports =  {
         
         client.on('speed-all-motor', function(data) {
             console.log("speed-all-motor ",data)
-            if(data.payload.value!= undefined){
+            if(data.payload && data.payload.value && !isNaN(data.payload.value)){
                 if(data.payload.value<0){
-                    motor.allThrottle(1);
+                    data.payload.value = 0;
                 }else if(data.payload.value > 255){
-                    motor.allThrottle(255);
-                }else{
-                    motor.allThrottle(Number(data.payload.value));
+                    data.payload.value = 255 ;
                 }
+                motor.allThrottle(Number(data.payload.value), ()=>{
+                    console.log('AllThrottle :',data.payload.value);
+                });
+            }else{
+               console.log("Error in receiving data");
+            }
+        });
+
+        client.on('speed-dual-motor', function(data) {
+            console.log("speed-dual-motor ",data)
+            if(data.payload && data.payload.value && data.payload.m1 && data.payload.m2  && !isNaN(data.payload.value)){
+                
+                let motors = [Number(data.payload.m1),Number (data.payload.m2)] ;
+                let speeds = [Number(data.payload.value), Number(data.payload.value)] ;
+
+                if(data.payload.value<0){
+                    data.payload.value = 0 ;
+                }else if(data.payload.value > 255){
+                    data.payload.value = 255 ;
+                }
+                motor.multiThrottle(motors,speeds, ()=>{
+                    console.log('MultiThrottle :',motors," -> ",speeds[0])
+                });
+                
             }else{
                console.log("Error in receiving data");
             }
