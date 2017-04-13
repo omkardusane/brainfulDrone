@@ -9,7 +9,7 @@ app.config(function($routeProvider) {
         templateUrl: 'pages/main.html',
         controller: 'main'
     })
-    .when("/indepentControl", {
+    .when("/krish", {
         templateUrl: 'pages/motor_control.html',
         controller: 'MotorControlCtrl'
     })    
@@ -18,6 +18,7 @@ app.config(function($routeProvider) {
 
 app.controller('main',function($scope){
     $scope.status = 'Not Connected';
+    window.location = "#krish"
     $scope.state = {auto:false , init:false , started:false};
     $scope.autoDownMode = ()=>{$scope.state.auto=!$scope.state.auto};
     //var socket = io.connect(window.location.host);

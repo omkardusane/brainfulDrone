@@ -5,8 +5,8 @@ module.exports =  {
         motor = m ;
     },
     socketHandle : function(client) {  
-        console.log('Clients connected '+i);
         i++;
+        console.log('Clients connected '+i);
         let statusUpdate = (status)=>{
             client.emit('motor-status', status);
         }

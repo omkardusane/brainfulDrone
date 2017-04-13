@@ -5,17 +5,24 @@ module.exports ={
             next()
         },
     
-        halt:(selected)=>{
-         
+        halt:(selected,next)=>{
+            if(next)next();
+        },
+        haltAll:next=>{
+            if(next)next();
         },
         multiHalt:(selected)=>{
-
+            if(next)next();
         },
-        throttle:(selected,speed,res,next)=>{
+        throttle:(selected,speed,next)=>{
             if(next)
             next();
         },
-        multiThrottle:(selected,speed,res,next)=>{
+        multiThrottle:(selected,speeds,next)=>{
+            if(next)
+            next();
+        },
+        allThrottle:(speed,next)=>{
             if(next)
             next();
         }
