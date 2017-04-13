@@ -1,5 +1,5 @@
 module.exports = {
-    isPi : true ,
+    isPi : false ,
     allMotorSingleControlMode : false,
     motorAddress: 0X10,
 }

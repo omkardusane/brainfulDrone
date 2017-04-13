@@ -41,6 +41,21 @@ module.exports =  {
             }
         });
         
+        client.on('speed-all-motor', function(data) {
+            console.log("speed-all-motor ",data)
+            if(data.payload.value!= undefined){
+                if(data.payload.value<0){
+                    motor.allThrottle(1);
+                }else if(data.payload.value > 255){
+                    motor.allThrottle(255);
+                }else{
+                    motor.allThrottle(Number(data.payload.value));
+                }
+            }else{
+               console.log("Error in receiving data");
+            }
+        });
+        
         client.on('disconnect', function() { i--; }); 
     }
 };
