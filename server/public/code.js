@@ -79,8 +79,7 @@ return {
                 };
                 $scope.val = $scope.val + parseInt($scope.$parent.deltaValue);
                 if($scope.name.includes(":")){ 
-                    $scope.$parent.sendValue($scope.name.split(":")[0],$scope.val);
-                    $scope.$parent.sendValue($scope.name.split(":")[1],$scope.val);
+                    $scope.$parent.sendDualMotorValue($scope.name.split(":")[0],$scope.name.split(":")[1],$scope.val);
                     if($scope.name.split(":")[1] == "3"){
                         $scope.$parent.value3 = $scope.val;
                     }else if($scope.name.split(":")[1] == "4"){
@@ -103,8 +102,7 @@ return {
                 };
                 $scope.val = $scope.val - parseInt($scope.$parent.deltaValue);
                 if($scope.name.includes(":")){ 
-                    $scope.$parent.sendValue($scope.name.split(":")[0],$scope.val);
-                    $scope.$parent.sendValue($scope.name.split(":")[1],$scope.val);
+                    $scope.$parent.sendDualMotorValue($scope.name.split(":")[0],$scope.name.split(":")[1],$scope.val);
                     if($scope.name.split(":")[1] == "3"){
                         $scope.$parent.value3 = $scope.val;
                     }else if($scope.name.split(":")[1] == "4"){
@@ -184,10 +182,7 @@ app.controller('MotorControlCtrl',function($scope){
                 $scope.value3 = $scope.value3 + $scope.dummyDeltaValue;
                 $scope.value4 = $scope.value4 + $scope.dummyDeltaValue;
 
-                socket.emit('speed-motor', {payload:{motorNumber : 1, value : $scope.value1 + $scope.dummyDeltaValue},message:'speed change'});
-                socket.emit('speed-motor', {payload:{motorNumber : 2, value : $scope.value2 + $scope.dummyDeltaValue},message:'speed change'});
-                socket.emit('speed-motor', {payload:{motorNumber : 3, value : $scope.value3 + $scope.dummyDeltaValue},message:'speed change'});
-                socket.emit('speed-motor', {payload:{motorNumber : 4, value : $scope.value4 + $scope.dummyDeltaValue},message:'speed change'});                
+                socket.emit('speed-all-motor', {payload:{value : $scope.value1 + $scope.dummyDeltaValue},message:'speed change'});           
             }
 
             $scope.globalDecrementer = function(){
@@ -197,16 +192,16 @@ app.controller('MotorControlCtrl',function($scope){
                 $scope.value3 = $scope.value3 - $scope.dummyDeltaValue;
                 $scope.value4 = $scope.value4 - $scope.dummyDeltaValue;
 
-                socket.emit('speed-motor', {payload:{motorNumber : 1, value : $scope.value1 - $scope.dummyDeltaValue},message:'speed change'});
-                socket.emit('speed-motor', {payload:{motorNumber : 2, value : $scope.value2 - $scope.dummyDeltaValue},message:'speed change'});
-                socket.emit('speed-motor', {payload:{motorNumber : 3, value : $scope.value3 - $scope.dummyDeltaValue},message:'speed change'});
-                socket.emit('speed-motor', {payload:{motorNumber : 4, value : $scope.value4 - $scope.dummyDeltaValue},message:'speed change'});                
+               socket.emit('speed-all-motor', {payload:{value : $scope.value1 - $scope.dummyDeltaValue},message:'speed change'});           
             }            
 
             $scope.sendValue = (motorNumber,val)=>{
-                console.log({value : val});
                 socket.emit('speed-motor', {payload:{motorNumber : motorNumber, value : val},message:'speed change'});
-            }    
+            }  
+
+            $scope.sendDualMotorValue = (motorNumber1, motorNumber2,val)=>{
+                socket.emit('speed-dual-motor', {payload:{m1 : motorNumber1, m2 : motorNumber2, value : val},message:'speed change'});
+            }
 
             $scope.stop = function(){
                  $scope.value1 = $scope.value2 = $scope.value3 = $scope.value5 = 36;
