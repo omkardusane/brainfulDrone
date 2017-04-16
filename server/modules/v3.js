@@ -1,5 +1,6 @@
 let motor = null;
 let i=0;
+let maxThrottleAllowed = 580; 
 module.exports =  {
     setReferences: (m)=>{
         motor = m ;
@@ -29,8 +30,8 @@ module.exports =  {
             if(data.payload && data.payload.motorNumber && data.payload.value  && !isNaN(data.payload.value)){
                 if(data.payload.value<0){
                     data.payload.value = 0 ;
-                }else if(data.payload.value > 255){
-                    data.payload.value = 255 ;
+                }else if(data.payload.value > maxThrottleAllowed){
+                    data.payload.value = maxThrottleAllowed ;
                 }
                 motor.throttle(Number(data.payload.motorNumber),Number(data.payload.value),()=>{
                     console.log("Single Throttle : ",data.payload.value)
@@ -45,8 +46,8 @@ module.exports =  {
             if(data.payload && data.payload.value && !isNaN(data.payload.value)){
                 if(data.payload.value<0){
                     data.payload.value = 0;
-                }else if(data.payload.value > 255){
-                    data.payload.value = 255 ;
+                }else if(data.payload.value > maxThrottleAllowed){
+                    data.payload.value = maxThrottleAllowed ;
                 }
                 motor.allThrottle(Number(data.payload.value), ()=>{
                     console.log('AllThrottle :',data.payload.value);
@@ -65,8 +66,8 @@ module.exports =  {
 
                 if(data.payload.value<0){
                     data.payload.value = 0 ;
-                }else if(data.payload.value > 255){
-                    data.payload.value = 255 ;
+                }else if(data.payload.value > maxThrottleAllowed){
+                    data.payload.value = maxThrottleAllowed ;
                 }
                 motor.multiThrottle(motors,speeds, ()=>{
                     console.log('MultiThrottle :',motors," -> ",speeds[0])
