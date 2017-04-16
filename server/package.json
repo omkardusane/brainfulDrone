@@ -4,6 +4,7 @@
   "description": "",
   "main": "r.js",
   "dependencies": {
+    "adafruit-pca9685": "^0.1.4",
     "express": "^4.15.2",
     "i2c": "^0.2.3",
     "ip": "^1.1.5",

@@ -9,7 +9,7 @@ let PORT = 9000 ;
 const config = require('./modules/config.js');
 const mocks = require('./modules/mocks.nonPi.js');
 
-let motor = config.isPi? require('./modules/i2cMotorInterface.js'):mocks.motor;
+let motor = config.isPi? require('./modules/PCA9685-i2cMotorInterface.js'):mocks.motor;
 let gyro = config.isPi? require('./modules/gyro-shim.js'):mocks.gyro;
 
 //let socketHandleV1 =  require('./modules/v1.js') ;
