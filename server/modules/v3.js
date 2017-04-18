@@ -11,6 +11,7 @@ module.exports =  {
     socketHandle : function(client) {  
         i++;
         console.log('Clients connected '+i);
+
         let statusUpdate = (status)=>{
             client.emit('motor-status', status);
         }
@@ -44,7 +45,7 @@ module.exports =  {
             motor.haltAll();
             statusUpdate('Stopped');          
         });
-
+        
         client.on('speed-motor', function(data) {
             console.log("speed-motor ",data)
             if(data.payload && data.payload.motorNumber && data.payload.value  && !isNaN(data.payload.value)){
@@ -98,6 +99,10 @@ module.exports =  {
             }
         });
         
+        client.on('mission-select',function(data,cb){
+
+        });
+
         client.on('disconnect', function() { i--; }); 
     }
 };
