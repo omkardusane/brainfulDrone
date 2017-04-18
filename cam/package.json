@@ -1,0 +1,16 @@
+{
+  "name": "cam",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "raspicam": "^0.2.13",
+    "sleep": "^5.1.1",
+    "v4l2camera": "^1.0.4"
+  }
+}

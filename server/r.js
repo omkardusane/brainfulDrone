@@ -22,7 +22,7 @@ let currentHandler = socketHandleV3 ;
 currentHandler.setReferences(motor,gyro);
 
 motor.init(()=>{
-    camera.startFailSafe(CAM_PORT,5);
+    camera.startFailSafe(CAM_PORT,1);
     config.camStreamSrc = 'http://'+ip.address()+':'+CAM_PORT+'/?action=stream';
         console.log('Rutvik Stream at : '+config.camStreamSrc);
     

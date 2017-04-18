@@ -32,11 +32,11 @@ module.exports =  {
             // gyro.subscribe(function(readings){
             //    client.emit('gyro-stream-in',readings)
             // });
-            console.log('in v3')
             setInterval(()=>{
-                console.log('emmitting: ',gyro.currentReadings)
+                //console.log('emmitting: ',gyro.currentReadings)
+                
                 client.emit('gyro-stream-in',gyro.currentReadings);
-            },500);
+            },config.gyroStreaminterval);
         });
         
         client.on('stop-motor', function(data) {

@@ -9,6 +9,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "i2c": "^0.2.3"
+    "adafruit-pca9685": "^0.1.4",
+    "i2c": "^0.2.3",
+    "i2c-bus": "^1.2.1",
+    "pca9685": "^4.0.3"
   }
 }

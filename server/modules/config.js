@@ -6,4 +6,5 @@ module.exports = {
     gyroLogsEnable : false , // millis
     gyroAddress : 0x68 , // millis
     gyroStreamFrequency : 2 , // millis
+    gyroStreaminterval : 50 , // millis
 }
