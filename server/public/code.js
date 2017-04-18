@@ -156,7 +156,11 @@ app.controller('MotorControlCtrl',function($scope){
                 $scope.value2 = $scope.value2 + $scope.dummyDeltaValue;
                 $scope.value3 = $scope.value3 + $scope.dummyDeltaValue;
                 $scope.value4 = $scope.value4 + $scope.dummyDeltaValue;
-                socket.emit('speed-all-motor', {payload:{value : $scope.value1 + $scope.dummyDeltaValue},message:'speed change'});           
+           
+                socket.emit('speed-motor', {payload:{motorNumber : 1, value : $scope.value1},message:'speed change'});
+                socket.emit('speed-motor', {payload:{motorNumber : 2, value : $scope.value2},message:'speed change'});
+                socket.emit('speed-motor', {payload:{motorNumber : 3, value : $scope.value3},message:'speed change'});
+                socket.emit('speed-motor', {payload:{motorNumber : 4, value : $scope.value4},message:'speed change'});
             }
             $scope.globalDecrementer = function(){
                 $scope.dummyDeltaValue = parseInt($scope.deltaValue);
@@ -164,7 +168,11 @@ app.controller('MotorControlCtrl',function($scope){
                 $scope.value2 = $scope.value2 - $scope.dummyDeltaValue;
                 $scope.value3 = $scope.value3 - $scope.dummyDeltaValue;
                 $scope.value4 = $scope.value4 - $scope.dummyDeltaValue;
-                socket.emit('speed-all-motor', {payload:{value : $scope.value1 - $scope.dummyDeltaValue},message:'speed change'});           
+           
+                socket.emit('speed-motor', {payload:{motorNumber : 1, value : $scope.value1},message:'speed change'});
+                socket.emit('speed-motor', {payload:{motorNumber : 2, value : $scope.value2},message:'speed change'});
+                socket.emit('speed-motor', {payload:{motorNumber : 3, value : $scope.value3},message:'speed change'});
+                socket.emit('speed-motor', {payload:{motorNumber : 4, value : $scope.value4},message:'speed change'});
             }            
             $scope.sendValue = (motorNumber,val)=>{
                 socket.emit('speed-motor', {payload:{motorNumber : motorNumber, value : val},message:'speed change'});
