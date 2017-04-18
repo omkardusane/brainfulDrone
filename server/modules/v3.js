@@ -1,9 +1,12 @@
 let motor = null;
+let gyro = null;
 let i=0;
 let maxThrottleAllowed = 580; 
+let config = require('./config');
 module.exports =  {
-    setReferences: (m)=>{
+    setReferences: (m,g)=>{
         motor = m ;
+        gyro = g ;
     },
     socketHandle : function(client) {  
         i++;
@@ -17,6 +20,23 @@ module.exports =  {
     
         client.on('msg', function(data) {
             console.log(data);
+        });
+
+        client.on('get-video-stream',function(cb){
+            if(cb)
+            cb(config.camStreamSrc);
+        });
+
+        client.on('start-gyro-stream',function(){
+            console.log('starting gyro stream');
+            // gyro.subscribe(function(readings){
+            //    client.emit('gyro-stream-in',readings)
+            // });
+            console.log('in v3')
+            setInterval(()=>{
+                console.log('emmitting: ',gyro.currentReadings)
+                client.emit('gyro-stream-in',gyro.currentReadings);
+            },500);
         });
         
         client.on('stop-motor', function(data) {
