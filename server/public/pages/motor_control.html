@@ -4,6 +4,21 @@ html,
 body {
   min-height: 100%;
   width: 100%;
+ font-family: 'Montserrat', sans-serif;
+}
+
+canvas 
+{ 
+  width: 100%; 
+  height: 100% ;
+
+}
+
+#qautInfo
+{
+  position:fixed;
+  bottom:0px;
+  right:0px;
 }
 
 .debug {
@@ -63,26 +78,50 @@ body {
 .animate-up .md-num-picker__content-view.ng-leave-active {
   top:-100%;
 }
+#mainVid{
+    height: auto;
+    width: 400px;
+    border: 7px gray solid;
+    border-radius: 5px;
+}
 </style>
+
+
          <div class="row">
             <div class="container">
               <h2>Configuration Panel</h2>
               <hr/>
-              <div class="row">
-                  <div class="col-lg-6">
-                      <h4> Mission Live Video</h4>
-                      <div id="missionVideoPanel"> </div>   
-                  </div>             
-              </div>
+
               
 
             </div>         
          </div>
-         <hr/>
-          <div class="row" align="center">
-            <div style="width: 80%;">
-                  <div class="col-lg-3" style="float:left;">
-                      <div class="form-group">
+          <div class="row">
+              <div class="col-lg-3" >
+                  <h4> Mission Live Video</h4>
+                  <div id="missionVideoPanel"> 
+                  </div>   
+                  <div style="margin-top: 10px;">
+                    <h4 align="center">Temparature Gauge</h4>
+                    <canvas id="foo" height="150px" width="300px"></canvas>
+                    <b>{{currTemp.celsius}} &#8451;</b>
+
+                  </div>                  
+              </div>       
+              <div class="col-lg-6">
+                  <h4> Gyro</h4>
+                  
+                  alpha: <b><span id="alpha"></span></b>
+                  beta:  <b><span id="beta"></span></b>
+                  gamma: <b><span id="gamma"></span></b>
+                  <br/>
+                  user X: <span id="userX"></span>
+                  user Y: <span id="userY"></span>
+                  <canvas id="myCanvas" height="auto" width="100%"></canvas>
+              </div>    
+              <div class="col-lg-2">
+                <div class="row">
+                      <div class="form-group" style="width: 100%;"> 
                         <label for="sel1">Choose delta:</label>
                         <select class="form-control" ng-model="deltaValue">
                           <option value="1" ng-selected="true">1</option>
@@ -93,30 +132,54 @@ body {
                           <option value="25">25</option>
                           <option value="30">30</option>
                         </select>
-                      </div>                     
-                  </div>
-                  <div class="col-lg-3">
-                      <div class="form-group">
+                      </div>                    
+                </div>
+                <div class="row">
+                      <div class="form-group" style="width: 100%;">
                         <label for="sel1">Global Change:</label>
                         <input class="form-control" type="text" placeholder="Enter value between 37 - 255" ng-model="globalValue">
                         <button type="button" class="btn btn-success" style="width: 100%; margin-top: 5px;" ng-click="globalValueApply()">Apply</button>
-                      </div>                      
-                  </div>
-                  <div class="col-lg-3">       
+                      </div>                    
+                </div>
+                <div class="row">
                     <div>
                        <label>Global Controlls</label>
                     </div>
-                    <div> 
+                    <div style="width: 100%;"> 
                       <div style="float:left;"><button type="button" class="btn btn-success" ng-click="globalIncrementer()" style="height: 90px;width: 90px;"> + </button></div>
                       <div style="float:right;"><button type="button" class="btn btn-danger" ng-click="globalDecrementer()" style="height: 90px;width: 90px;"> - </button></div>
-                    </div>  
-                  </div>  
-                  <div class="col-lg-3">        
-                      <button type="button" class="btn btn-danger" ng-click="stop()" style="margin-top: 20%;">Shutdown all motors! </button>            
-                  </div>    
-              </div>               
-          </div>  
-          <hr/>
+                    </div>                    
+                </div>
+                <div class="row">
+                   <button type="button" class="btn btn-danger" ng-click="stop()" style="margin-top: 20%;width: 100%;">Shutdown all motors! </button>            
+                </div>
+                <div class="row" style="margin-top: 20px;">
+                    <button type="button" class="btn btn-info" ng-click="camt()" style="width: 100%;">Troubleshoot Camera </button>            
+                    <button type="button" class="btn btn-info" ng-click="gt()" style="width: 100%;margin-top: 5px;">Troubleshoot Gyro </button>            
+                </div>
+              </div>                
+          </div>         
+         <hr/>
+         <div align="center"><h4>Mission Control</h4></div>
+         <hr/>
+         <div class="row" align="center">
+         	<div class="col-lg-6">
+            <h5><b>Sqaure Path</b></h5>
+            <input type="image" id="myimage" src="../images/square-dashed.png" style="width: 150px;height: 150px;" />
+            
+            <div style="margin-top: 10px; width: 80%;"><md-progress-linear md-mode="determinate" value="50"></md-progress-linear></div>
+            <div style="margin-top: 10px; float: left; margin-left: 15px;"><b>State: </b></div>
+          </div>
+         	<div class="col-lg-6">
+            <h5><b>Circle Path</b></h5>
+            <input type="image" id="myimage" src="../images/circle-dashed.png" style="width: 150px;height: 150px;" />
+
+
+            <div style="margin-top: 10px; width: 80%;"><md-progress-linear md-mode="determinate" value="50"></md-progress-linear></div>
+            <div style="margin-top: 10px; float: left;margin-left: 15px;"><b>State: </b></div>
+          </div>
+         </div>
+         <hr/>
          <div class="row" align="center">
                 <div class="col-lg-3">
                     <div class="element-container" md-whiteframe="10" ng-init="value1=36" >

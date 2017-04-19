@@ -19,7 +19,9 @@ let camera = config.isPi? require('./../cam/camstreamer.js'):null;
 let socketHandleV3 =  require('./modules/v3.js') ;
 
 let currentHandler = socketHandleV3 ;
-currentHandler.setReferences(motor,gyro);
+currentHandler.setReferences(io,motor,gyro, function(){
+    camera.start(CAM_PORT);
+});
 
 motor.init(()=>{
     camera.startFailSafe(CAM_PORT,1);

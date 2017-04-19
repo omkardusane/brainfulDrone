@@ -1,40 +1,41 @@
 var five = require("johnny-five");
 var Raspi = require("raspi-io");
-let config = require('./config')
+let config = require('./config');
+
 let shim ={
     isStarted : false ,
-    subs : [] ,
     currentReadings : {},
+    currentThermo : {},
     init:()=>{
         shim.board = new five.Board({
             io: new Raspi()
         });
-        shim.board.on("ready", function() {
-            var imu = new five.IMU({
-                controller: "MPU6050",
-                address: config.gyroAddress, // optional
-                freq: config.gyroStreamFrequency    
-            });
-            shim.isStarted = true ;
-            imu.on("change", function(){ 
-                let self = this;
-                if(config.gyroLogsEnable)
-                {
-                    gyroLogger(self)
-                }
-                //console.log('Yo : ',shim.subs.length)
-                // shim.subs.forEach(function(elementSub) {
-                //     elementSub(self.gyro,
-                // },
-                shim.currentReadings = gyroAngles(gyroRead(this));
-            });
-        })
+        shim.board.on("ready",shim.onReady);
     },
-    subscribe:(sub)=>{
-        if(shim.isStarted && sub && (typeof sub == 'function')){
-            shim.subs.push(sub);
-            console.log('Subscribing to gyro: ',shim.subs.length);
-        }
+    onReady:()=>{
+        shim.imu = new five.IMU({
+            controller: "MPU6050",
+            address: config.gyroAddress, // optional
+            freq: config.gyroStreamFrequency    
+        });
+        shim.isStarted = true ;
+        shim.imu.on("change", function(){ 
+            let rawReadings = (gyroRead(this));
+            if(config.gyroLogsEnable)
+            {
+                gyroLogger(rawReadings)
+            }
+
+            //console.log('Yo : ',shim.subs.length)
+            // shim.subs.forEach(function(elementSub) {
+            //     elementSub(self.gyro,
+            // },
+            shim.currentReadings = gyroAngles(rawReadings);
+            shim.currentThermo = temperature(rawReadings);
+        });
+    }, 
+    reboot:()=>{
+        shim.onReady();
     }
 };
 module.exports = shim ;
@@ -69,6 +70,10 @@ let gyroRead = sensorthis=>{
     };
 }
 
+let temperature = raw=>{
+    return raw.thermometer ;
+}
+
 let gyroAngles = (reading)=>{
     return {
         x : reading.gyro.pitch.angle/2 ,
@@ -82,7 +87,7 @@ let gyroAngles = (reading)=>{
     // x z y
 }
 
-let gyroLogger = function(sensorthis) {
-    console.log(gyroRead(sensorthis));
+let gyroLogger = function(raw) {
+    console.log(raw);
 };
 
