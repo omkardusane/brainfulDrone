@@ -34,14 +34,14 @@ let self ={
     },
     multiThrottle:(selected,speeds,next)=>{
         selected.forEach((obj,index)=>{
-        self.wire.setPwm(self.motors[selected-1],self.settings.kickUpTick, speeds[index]);
+            self.wire.setPwm(self.motors[selected-1],self.settings.kickUpTick, speeds[index]);
         });
         console.log('multiThrottle Sent to Motors : ',selected,' -> ',speeds);
         if(next) next();
     },    
     allThrottle:(speed,next)=>{
         self.motors.forEach((motor)=>{
-        self.wire.setPwm(motor, self.settings.kickUpTick, speed);
+            self.wire.setPwm(motor, self.settings.kickUpTick, speed);
         });
         console.log('allThrottle Sent to Motors , speed is ',speed);
         if(next) next();

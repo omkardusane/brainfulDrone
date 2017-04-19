@@ -4,7 +4,8 @@ html,
 body {
   min-height: 100%;
   width: 100%;
- font-family: 'Montserrat', sans-serif;
+  font-family: 'Montserrat', sans-serif;
+  background-color: #fafafa;
 }
 
 canvas 
@@ -165,19 +166,59 @@ canvas
          <div class="row" align="center">
          	<div class="col-lg-6">
             <h5><b>Sqaure Path</b></h5>
-            <input type="image" id="myimage" src="../images/square-dashed.png" style="width: 150px;height: 150px;" />
+            <div style="width: 30%;">
+              <div class="form-group" style="width: 100%;"> 
+                <label for="sel1">Duration</label>
+                <select class="form-control" ng-model="sqaureDuration" ng-init="sqaureDuration = 12000">
+                  <option value="12000">12</option>
+                  <option value="20000"  ng-selected="true">20</option>
+                  <option value="40000">40</option>
+                </select>
+              </div>       
+            </div>
+			       <div style="width: 30%;">
+              <div class="form-group" style="width: 100%;"> 
+                <label for="sel1">Side</label>
+                <select class="form-control" ng-model="sqaureSide" ng-init="sqaureSide = 5">
+                  <option value="5">5 m</option>
+                  <option value="40"  ng-selected="true">40 m</option>
+                </select>
+              </div>   			
+		      	</div>            
+            <a ng-click="selectmission('SQUARE')"><input type="image" id="myimage" src="../images/square-dashed.png" style="width: 150px;height: 150px;" /></a>
             
-            <div style="margin-top: 10px; width: 80%;"><md-progress-linear md-mode="determinate" value="50"></md-progress-linear></div>
-            <div style="margin-top: 10px; float: left; margin-left: 15px;"><b>State: </b></div>
+
           </div>
          	<div class="col-lg-6">
             <h5><b>Circle Path</b></h5>
-            <input type="image" id="myimage" src="../images/circle-dashed.png" style="width: 150px;height: 150px;" />
+            <div style="width: 30%;">
+              <div class="form-group" style="width: 100%;"> 
+                <label for="sel1">Duration</label>
+                <select class="form-control" ng-model="circleDuration" n>
+                  <option value="12" ng-selected="true">1</option>
+                  <option value="20">5</option>
+                  <option value="40">10</option>
+                </select>
+              </div>       
+            </div>
+             <div style="width: 30%;">
+              <div class="form-group" style="width: 100%;"> 
+                <label for="sel1">Radius</label>
+                <select class="form-control" ng-model="circleSide">
+                  <option value="10" ng-selected="true">10 m</option>
+                  <option value="20">20 m</option>
+                </select>
+              </div>        
+            </div>              
+            <a ng-click=""><input type="image" id="myimage" src="../images/circle-dashed.png" style="width: 150px;height: 150px;" /></a>
 
-
-            <div style="margin-top: 10px; width: 80%;"><md-progress-linear md-mode="determinate" value="50"></md-progress-linear></div>
-            <div style="margin-top: 10px; float: left;margin-left: 15px;"><b>State: </b></div>
           </div>
+            <div style="width: 100%;">
+              <button type="button" class="btn btn-info" ng-click="missionController.start()"> Start Mission </button>
+              <button type="button" class="btn btn-danger" ng-click="missionController.abort()"> Abort Mission </button>
+              <div style="margin-top: 10px; margin-left: 10px; width: 80%;" ng-show="missionInit == true"><md-progress-linear md-mode="determinate" value="{{progressPercentage}}"></md-progress-linear></div>
+              <div style="margin-top: 10px; margin-left: 10px; margin-left: 15px;" ng-show="missionInit == true"><b>State: </b>{{status}}</div>      
+            </div>    
          </div>
          <hr/>
          <div class="row" align="center">

@@ -5,6 +5,8 @@ let i=0;
 let maxThrottleAllowed = 580; 
 let config = require('./config');
 let io = null ;
+let speeds = {max : 80 , off : 30 , min : 50};
+var throttleDelays = 500 ;
 
 const mission = require('./mission');
 
@@ -161,6 +163,7 @@ module.exports =  {
             io.sockets.emit('mission-complete');
         }
         client.on('mission-select',function(data,params,cb){
+            console.log('MISSION SELECT : ',data," -> ",params);
             if(!!mission.options.types[data] && params && (params.length==2)){
                 mission.selectMission(data,(reference,builder)=>{
                     reference = builder(params[0],params[1]);
@@ -176,13 +179,13 @@ module.exports =  {
             }
         });
 
-        client.on('mission-start',function(data,cb){
+        client.on('mission-start',function(cb){
             if(mission.isReady()){
                 mission.startMission(()=>{
                     let speed = 100 / mission.currentMission().time ; // millis
                     let delay = 1000 ;
                     let distance = 0 ;
-                    let tick = 1 ;
+                    let tick =  0 ;
                     let ticks =  mission.currentMission().time / delay ;
                     let checkPoints = [] ;
                     if(mission.currentMission().type == 2) // CIRCLE
@@ -193,7 +196,7 @@ module.exports =  {
                     else if(mission.currentMission().type == 3)// SQUARE
                     {
                         distance = (4*(mission.currentMission().side));
-                        checkPoints = [1 , (ticks/4) , (ticks/2) , (3*ticks/4) , ticks];
+                        checkPoints = [0 , (ticks/4) , (ticks/2) , (3*ticks/4) , ticks];
                     }
                     let intervalControl = setInterval(()=>{
                         if(tick <= ticks && mission.isStarted()){
@@ -203,15 +206,52 @@ module.exports =  {
                             }
                             if(mission.currentMission().type == 2) // CIRCLE
                             {
-                                checkPoints.forEach(t =>{
+                                checkPoints.forEach((t,index) =>{
                                     if(tick == t){
-                                        
+                                        if(index ==0){ // 0%
+                                            motor.multiThrottle([1,2,3,4],[speeds.max,speeds.off,speeds.off,speeds.max]);
+                                            setTimeout(()=>{
+                                                motor.allThrottle(speeds.min);
+                                            },throttleDelays);
+                                        }
+                                        else if(index == 1 || index ==2 || index ==3){ // 25% and 50% and 75%
+                                            motor.multiThrottle([1,2,3,4],[speeds.max,speeds.off,speeds.off,speeds.off]);
+                                            setTimeout(()=>{
+                                                motor.multiThrottle([1,2,3,4],[speeds.max,speeds.max,speeds.off,speeds.off]);
+                                                setTimeout(()=>{
+                                                     motor.allThrottle(speeds.min);
+                                                },throttleDelays);
+                                            },throttleDelays);
+                                        }
+                                        else if(index ==4){ // 100%
+                                            motor.multiThrottle([1,2,3,4],[speeds.off,speeds.max,speeds.max,speeds.off]);
+                                            setTimeout(()=>{
+                                                motor.haltAll();
+                                            },throttleDelays);
+                                        }
                                     }
                                 })
                             }
                             if(mission.currentMission().type == 3) // SQUARE
                             {
-
+                                checkPoints.forEach((t,index) =>{
+                                    if(tick == t){
+                                        if(index==0){ // 0%
+                                            motor.multiThrottle([1,2,3,4],[speeds.max,speeds.off,speeds.off,speeds.off]);
+                                            setTimeout(()=>{
+                                                motor.multiThrottle([1,2,3,4],[speeds.max,speeds.max,speeds.min,speeds.min]);
+                                                setTimeout(()=>{
+                                                     motor.allThrottle(speeds.min);
+                                                },throttleDelays);
+                                            },throttleDelays);
+                                        }else if(index == 1 ){ // 25%
+                                            motor.multiThrottle([1,2,3,4],[speeds.off,speeds.off,speeds.off,speeds.max]);
+                                            setTimeout(()=>{
+                                                motor.haltAll();
+                                            },throttleDelays);
+                                        }
+                                    }
+                                })
                             }
                             let currTask = 'Straight Go Ahead' ;
                             

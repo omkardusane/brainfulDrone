@@ -60,8 +60,8 @@ var mission = {
         if( mission.state == mission.options.states[1] )
         {
             mission.state = mission.options.states[2];  
-            if(perform)perform();
             if(next)next(true);
+            if(perform)perform();            
         }else{
             if(next)next(false);
         } 

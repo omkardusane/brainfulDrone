@@ -443,6 +443,7 @@ app.controller('MotorControlCtrl',function($scope){
 
             $scope.deltaValue = 1;
 
+
             var opts = {
               angle: -0.2, // The span of the gauge arc
               lineWidth: 0.2, // The line thickness
@@ -538,7 +539,7 @@ app.controller('MotorControlCtrl',function($scope){
                 if(window.location.hash == "#/motors"){
                     //console.log(readings, ' -> thermo-stream-in at ', (new Date().getTime())/1000);
                     $scope.currTemp = readings ;
-                    console.log($scope.currTemp.celsius);
+                    //console.log($scope.currTemp.celsius);
                     gauge.set($scope.currTemp.celsius);
                     // Update temperature values here
                 }
@@ -550,11 +551,13 @@ app.controller('MotorControlCtrl',function($scope){
                         console.log('Mission : ',missionName)
                         if(event){
                             console.log('Status : ',event)
+                            $scope.status = event.status;
                         }
                     });
-                    socket.on('mission-progress',function(progressPercentage,event){
-                        console.log('Progress : ',progressPercentage)
-                        if(event){
+                    socket.on('mission-progress',function(missionName,event){ 
+                        if(event.progress){
+                            console.log('Progress : ',event.progress)
+                            $scope.progress = event.progress;                            
                             console.log('Status : ',event)
                         }
                     });
@@ -563,16 +566,36 @@ app.controller('MotorControlCtrl',function($scope){
                     });
 
                 },
-                select : function(name){
-                    socket.emit('mission-select',name);
+                select : function(name,params){
+                    // {side:5,time:20000}
+
+
+                    socket.emit('mission-select',name,params);
                 },
                 start : function(){
-                    socket.emit('mission-select',name);
+                    socket.emit('mission-start',function(msg){
+                        $scope.missionInit = true;
+                        console.log(msg);
+                    });
+                },
+                abort : function(){
+                    socket.emit('mission-abort',function(msg){
+                        $scope.missionInit = false;
+                        console.log(msg);
+                    });
                 },
 
             }
+
+            $scope.missionController = missionCtrl;
+
             missionCtrl.init();
             mc = missionCtrl ;
+
+            $scope.selectmission = function(name){
+                var param = {side : 40, time : 20000};
+                $scope.missionController.select(name,param);
+            }
             
             // Gyro start: 
             var gyro=quatFromAxisAngle(0,0,0,0);
