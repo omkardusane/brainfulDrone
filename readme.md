@@ -4,8 +4,8 @@
 
 ## Images
 
-![Alt text](/docs/images/s 1.jpg?raw=true "Autonomous Mission Control")
-![Alt text](/docs/images/s 2.jpg?raw=true "Config Panel")
-![Alt text](/docs/images/d 1.jpg?raw=true "Drone")
-![Alt text](/docs/images/d 3.jpg?raw=true )
-![Alt text](/docs/images/d 5.jpg?raw=true )
+![alt text](docs/images/s 1.jpg?raw=true "Autonomous Mission Control")
+![alt text](docs/images/s 2.jpg?raw=true "Config Panel")
+![alt text](docs/images/d 1.jpg?raw=true "Drone")
+![alt text](docs/images/d 3.jpg?raw=true )
+![alt text](docs/images/d 5.jpg?raw=true )
