@@ -4,8 +4,8 @@
 
 ## Images
 
-![alt text](https://raw.githubusercontent.com/omkardusane/brainfulDrone/master/docs/images/d%201.jpg "Autonomous Mission Control")
-![alt text](docs/images/s 2.jpg?raw=true "Config Panel")
+![alt text](https://github.com/omkardusane/brainfulDrone/blob/master/docs/images/s%201.jpg?raw=true "Autonomous Mission Control")
+![alt text](https://github.com/omkardusane/brainfulDrone/blob/master/docs/images/s%202.jpg?raw=true "Config Panel")
 ![alt text](https://raw.githubusercontent.com/omkardusane/brainfulDrone/master/docs/images/d%201.jpg "Drone")
-![alt text](docs/images/d 3.jpg?raw=true )
-![alt text](docs/images/d 5.jpg?raw=true )
+![alt text](https://raw.githubusercontent.com/omkardusane/brainfulDrone/master/docs/images/d%203.jpg )
+![alt text](https://raw.githubusercontent.com/omkardusane/brainfulDrone/master/docs/images/d%205.jpg )
