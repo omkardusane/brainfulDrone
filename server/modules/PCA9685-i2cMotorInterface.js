@@ -34,7 +34,7 @@ let self ={
     },
     multiThrottle:(selected,speeds,next)=>{
         selected.forEach((obj,index)=>{
-            self.wire.setPwm(self.motors[selected-1],self.settings.kickUpTick, speeds[index]);
+            self.wire.setPwm(self.motors[obj-1],self.settings.kickUpTick, speeds[index]);
         });
         console.log('multiThrottle Sent to Motors : ',selected,' -> ',speeds);
         if(next) next();

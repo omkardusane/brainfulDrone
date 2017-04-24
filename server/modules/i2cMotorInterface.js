@@ -10,7 +10,7 @@ let self ={
         let arr = [102,1] ;
         self.wire.write(arr,function(err) {
             console.log('Initialized motors: ',arr);
-             if(next) next();
+            if(next) next();
         });
         next();
     },

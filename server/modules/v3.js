@@ -1,21 +1,39 @@
 let motor = null;
 let gyro = null;
+let ir = require('./../../proximity_sensor/ir-prox2')
 let cameraTroubleShoot = null;
 let i=0;
 let maxThrottleAllowed = 580; 
 let config = require('./config');
 let io = null ;
-let speeds = {max : 80 , off : 30 , min : 50};
+let speeds = {max : 120 , off : 30 , min : 50};
 var throttleDelays = 500 ;
 
 const mission = require('./mission');
+let ir_dummy = {
+    interval : null,
+    open :(onReadings)=>{
+        ir.interval = setInterval(()=>{
+            require('child_process').exec('sudo ./modules/pulse', function(error, stdout, stderr) {
+                console.log(error,stdout,stderr);
+                //onReadings(stdout);
+            });
+        },500);
+    },
+    close :()=>{clearInterval(ir.interval);}
+}
 
 module.exports =  {
+    
     setReferences: (socketIo,m,g,cameraTroubleShootFunction)=>{
         io = socketIo;
         motor = m ;
         gyro = g ;
         cameraTroubleShoot = cameraTroubleShootFunction;
+        ir.open((value)=>{
+            //console.log('ir value ',value);
+            io.sockets.emit('ir-status',value);
+        });
     },
     socketHandle : function(client) {
         client.hasThermoStream = false ;  
@@ -165,9 +183,7 @@ module.exports =  {
         client.on('mission-select',function(data,params,cb){
             console.log('MISSION SELECT : ',data," -> ",params);
             if(!!mission.options.types[data] && params && (params.length==2)){
-                mission.selectMission(data,(reference,builder)=>{
-                    reference = builder(params[0],params[1]);
-                });
+                mission.selectMission(data,params);
                 if(cb){
                      cb({ok:true,message:'Mission Selected'})
                 }
@@ -180,41 +196,58 @@ module.exports =  {
         });
 
         client.on('mission-start',function(cb){
-            if(mission.isReady()){
+            console.log('Mission Start : ',mission.currentMission());
+            if(mission.isReady() && !!mission.currentMission() ){
                 mission.startMission(()=>{
-                    let speed = 100 / mission.currentMission().time ; // millis
-                    let delay = 1000 ;
+                    let speed = 100 / mission.currentMission().attr.time ; // millis
+                    let delay = 500 ;
                     let distance = 0 ;
                     let tick =  0 ;
-                    let ticks =  mission.currentMission().time / delay ;
+                    let ticks =  mission.currentMission().attr.time / delay ;
                     let checkPoints = [] ;
+
+                    console.log('in start tick '+tick ,' / '+ticks);
+                    console.log('in start Time  '+mission.currentMission().attr.time ,' is ', typeof mission.currentMission().attr.time);
+                    console.log('TickSpeed Perc  '+speed);
+                    console.log('isStarted ---- '+mission.isStarted());
+                
+
                     if(mission.currentMission().type == 2) // CIRCLE
                     {
-                        distance = (44*(mission.currentMission().radius)/7);
+                        distance = (44*(mission.currentMission().attr.radius)/7);
                         checkPoints = [1 , ticks];
                     }
                     else if(mission.currentMission().type == 3)// SQUARE
                     {
-                        distance = (4*(mission.currentMission().side));
+                        distance = (4*(mission.currentMission().attr.side));
                         checkPoints = [0 , (ticks/4) , (ticks/2) , (3*ticks/4) , ticks];
                     }
+                    console.log('intervals checkPoints ',checkPoints);
+
                     let intervalControl = setInterval(()=>{
                         if(tick <= ticks && mission.isStarted()){
                             mission.progress += (delay*speed);
                             if(mission.progress>100){
                                 mission.progress = 100;
                             }
-                            if(mission.currentMission().type == 2) // CIRCLE
+                            let currTask = 'Straight Going Ahead' ;
+                            if(mission.currentMission().type == 3) // CIRCLE
                             {
+                                let lock = 0 ;
                                 checkPoints.forEach((t,index) =>{
+                                    console.log('tick '+t,' ')
                                     if(tick == t){
-                                        if(index ==0){ // 0%
+                                        if(index ==0 && (lock==0)){ // 0%
+                                            lock=1;
+                                            currTask = 'Front Yaw - Back lift';
                                             motor.multiThrottle([1,2,3,4],[speeds.max,speeds.off,speeds.off,speeds.max]);
                                             setTimeout(()=>{
                                                 motor.allThrottle(speeds.min);
                                             },throttleDelays);
                                         }
-                                        else if(index == 1 || index ==2 || index ==3){ // 25% and 50% and 75%
+                                        else if((index == 1 || index ==2 || index ==3)&& (lock==0)){ // 25% and 50% and 75%
+                                            lock=1;
+                                            currTask = 'Right Roll - Left lift';
                                             motor.multiThrottle([1,2,3,4],[speeds.max,speeds.off,speeds.off,speeds.off]);
                                             setTimeout(()=>{
                                                 motor.multiThrottle([1,2,3,4],[speeds.max,speeds.max,speeds.off,speeds.off]);
@@ -223,8 +256,10 @@ module.exports =  {
                                                 },throttleDelays);
                                             },throttleDelays);
                                         }
-                                        else if(index ==4){ // 100%
+                                        else if(index ==4 && (lock ==0)){ // 100%
+                                            lock=1;
                                             motor.multiThrottle([1,2,3,4],[speeds.off,speeds.max,speeds.max,speeds.off]);
+                                            currTask = 'Back Yaw - front lift';
                                             setTimeout(()=>{
                                                 motor.haltAll();
                                             },throttleDelays);
@@ -232,11 +267,12 @@ module.exports =  {
                                     }
                                 })
                             }
-                            if(mission.currentMission().type == 3) // SQUARE
+                            if(mission.currentMission().type == 2) // CIRCLE
                             {
                                 checkPoints.forEach((t,index) =>{
                                     if(tick == t){
                                         if(index==0){ // 0%
+                                            currTask = 'sdjfghj';
                                             motor.multiThrottle([1,2,3,4],[speeds.max,speeds.off,speeds.off,speeds.off]);
                                             setTimeout(()=>{
                                                 motor.multiThrottle([1,2,3,4],[speeds.max,speeds.max,speeds.min,speeds.min]);
@@ -245,6 +281,8 @@ module.exports =  {
                                                 },throttleDelays);
                                             },throttleDelays);
                                         }else if(index == 1 ){ // 25%
+                                            currTask = 'jksdfbkjdh';
+                                            
                                             motor.multiThrottle([1,2,3,4],[speeds.off,speeds.off,speeds.off,speeds.max]);
                                             setTimeout(()=>{
                                                 motor.haltAll();
@@ -253,15 +291,17 @@ module.exports =  {
                                     }
                                 })
                             }
-                            let currTask = 'Straight Go Ahead' ;
-                            
-                            broadcastMissionProgress(mission.currentMission().name,{
+                            let eventNow = {
                                 progress : mission.progress ,
                                 task : currTask,
-                            });
+                            };
+                            broadcastMissionProgress(mission.currentMission().name,eventNow);
+                            console.log("Tick : ",tick, " / ",ticks ,': ',eventNow);
+    
                         }else{
                             clearInterval(intervalControl);
                             if(mission.isStarted()){
+                                console.log('mission complete')
                                 gyro.reboot();
                                 mission.complete();
                                 broadcastMissionComplete();
@@ -286,6 +326,7 @@ module.exports =  {
         });
         
         client.on('mission-abort',function(cb){
+            console.log('Mission abort : ',mission.currentMission());
             mission.abort(()=>{
                 if(mission.isStarted()){
                     motor.haltAll(()=>{

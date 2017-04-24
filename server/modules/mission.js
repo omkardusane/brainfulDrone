@@ -39,9 +39,14 @@ var mission = {
     initMissionModule: ()=>{
         mission.current = {type:1};
     },
-    selectMission : (typeString,builder) =>{
-        builder(mission.current,mission.options.types[typeString].build);
+    selectMission : (typeString,params) =>{
+        //builder(mission.current,mission.options.types[typeString].build);
+        // (reference,builder)=>{
+        //             reference = builder(params[0],params[1]);
+        //             console.log(reference);
+        //         }
         mission.progress= 0 ;
+        mission.current = mission.options.types[typeString].build(Number(params[0]),Number(params[1]));
         mission.state = mission.options.states[1] ;  
     },
     isReady : ()=>{

@@ -534,6 +534,11 @@ app.controller('MotorControlCtrl',function($scope){
                 }
             });
 
+            socket.on('ir-status',function(value){
+                console.log('IR status -> ',value);
+            })
+
+
             socket.emit('start-thermo-stream');
             socket.on('thermo-stream-in',function(readings){
                 if(window.location.hash == "#/motors"){
@@ -556,21 +561,26 @@ app.controller('MotorControlCtrl',function($scope){
                     });
                     socket.on('mission-progress',function(missionName,event){ 
                         if(event.progress){
-                            console.log('Progress : ',event.progress)
-                            $scope.progress = event.progress;                            
-                            console.log('Status : ',event)
+                           // console.log('Progress : ',event.progress)
+                            $scope.progress = event.progress; 
+                            $scope.currentTask = event.task; 
+                            console.log(event.task);                             
+                            //console.log('Status : ',event)
                         }
                     });
                     socket.on('mission-complete',function(){
                         console.log('*** mission-complete ***');
+                        $scope.status = "Completed";
                     });
 
                 },
                 select : function(name,params){
                     // {side:5,time:20000}
 
-
-                    socket.emit('mission-select',name,params);
+                    console.log($scope.sqaureSide);
+                    console.log($scope.sqaureDuration);
+                    var param = [$scope.sqaureSide,$scope.sqaureDuration];
+                    socket.emit('mission-select',name,param);
                 },
                 start : function(){
                     socket.emit('mission-start',function(msg){
