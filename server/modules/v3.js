@@ -6,7 +6,13 @@ let i=0;
 let maxThrottleAllowed = 580; 
 let config = require('./config');
 let io = null ;
+
 let speeds = {max : 120 , off : 30 , min : 50};
+
+let auto_stability_times = { delay : 300 , out : 300 };
+let auto_stability_speeds = { off : 30 , min : 40 , mid : 60 , max :90};
+let auto_stability_controller = { on :false };
+
 var throttleDelays = 500 ;
 
 const mission = require('./mission');
@@ -352,5 +358,83 @@ module.exports =  {
         });
 
         client.on('disconnect', function() { i--; }); 
+
+        client.on('auto-stability',function(){
+            /**
+             * y - means back up
+             * y + means front up
+             * 
+             * x - means left up
+             * x + means right up
+             * 
+             * z + means rght back
+             * 
+             */
+            motor.haltAll();
+            let intervalHandler = ()=>{
+                let d = gyro.currentReadings
+                if(d && auto_stability_controller.on){
+                    //console.log('--> ',d);
+                    let y = d.y;
+                    if(x<10 && x>-10){
+
+                    }else{
+                        
+                    }
+                    if(y>20){
+                      motor.multiThrottle([1,4],[auto_stability_speeds.max,auto_stability_speeds.max]);
+                      motor.multiThrottle([2,3],[auto_stability_speeds.min,auto_stability_speeds.min]);
+                    }else if(y>10){
+                      motor.multiThrottle([1,4],[auto_stability_speeds.mid,auto_stability_speeds.mid]);
+                      motor.multiThrottle([2,3],[auto_stability_speeds.min,auto_stability_speeds.min]);
+                    }else if(y>0){
+                      motor.multiThrottle([1,4],[auto_stability_speeds.min,auto_stability_speeds.min]);
+                      motor.multiThrottle([2,3],[auto_stability_speeds.min,auto_stability_speeds.min]);
+                    }else if(y>=-10){
+                      motor.multiThrottle([1,4],[auto_stability_speeds.min,auto_stability_speeds.min]);
+                      motor.multiThrottle([2,3],[auto_stability_speeds.mid,auto_stability_speeds.mid]);
+                    }else if(y<-10){
+                      motor.multiThrottle([1,4],[auto_stability_speeds.min,auto_stability_speeds.min]);
+                      motor.multiThrottle([2,3],[auto_stability_speeds.max,auto_stability_speeds.max]);
+                    }
+
+                    //let time = (new Date().getTime()) + auto_stability_times.out ;
+                    //while(new Date().getTime() < time){}
+
+                    // let x = d.x;
+                    // if(x>20){
+                    //   motor.multiThrottle([1,2],[auto_stability_speeds.max,auto_stability_speeds.max]);
+                    //   motor.multiThrottle([4,3],[auto_stability_speeds.min,auto_stability_speeds.min]);
+                    // }else if(x>10){
+                    //   motor.multiThrottle([1,2],[auto_stability_speeds.mid,auto_stability_speeds.mid]);
+                    //   motor.multiThrottle([4,3],[auto_stability_speeds.min,auto_stability_speeds.min]);
+                    // }else if(x>0){
+                    //   motor.multiThrottle([1,2],[auto_stability_speeds.min,auto_stability_speeds.min]);
+                    //   motor.multiThrottle([4,3],[auto_stability_speeds.min,auto_stability_speeds.min]);
+                    // }else if(x>=-10){
+                    //   motor.multiThrottle([1,2],[auto_stability_speeds.min,auto_stability_speeds.min]);
+                    //   motor.multiThrottle([4,3],[auto_stability_speeds.mid,auto_stability_speeds.mid]);
+                    // }else if(x<-10){
+                    //   motor.multiThrottle([1,2],[auto_stability_speeds.min,auto_stability_speeds.min]);
+                    //   motor.multiThrottle([4,3],[auto_stability_speeds.max,auto_stability_speeds.max]);
+                    // }
+
+                    //time = (new Date().getTime()) + auto_stability_times.out ;
+                    //while(new Date().getTime() < time){}
+                    
+                }
+            };
+            auto_stability_controller.on = true ;
+            // while(auto_stability_controller.on){
+            //     intervalHandler();
+            // }
+            let interval = setInterval(intervalHandler, auto_stability_times.delay );
+        });
+        
+        client.on('auto-stability-off',function(){
+            auto_stability_controller.on = false;
+        });
+
     }
+
 };
