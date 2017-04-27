@@ -107,7 +107,15 @@ canvas
                     <canvas id="foo" height="150px" width="300px"></canvas>
                     <b>{{currTemp.celsius}} &#8451;</b>
 
-                  </div>                  
+                  </div>    
+                  <div style="margin-top: 10px;">         
+                      <div ng-if="proximity == 'true'">     
+                        <p style="font-size: 20px; color:red;"><b>Danger: Obstacle Detected! </b></p>
+                      </div>
+                      <div ng-if="proximity == 'false'">     
+                       <p style="font-size: 20px; color:green;"><b>All Clear.</b></p>
+                      </div>                      
+                  </div>
               </div>       
               <div class="col-lg-6">
                   <h4> Gyro</h4>
@@ -157,6 +165,9 @@ canvas
                 <div class="row" style="margin-top: 20px;">
                     <button type="button" class="btn btn-info" ng-click="camt()" style="width: 100%;">Troubleshoot Camera </button>            
                     <button type="button" class="btn btn-info" ng-click="gt()" style="width: 100%;margin-top: 5px;">Troubleshoot Gyro </button>            
+                    <button type="button" class="btn btn-success" ng-click="stabilityOn()" style="width: 100%;margin-top: 5px;">Auto Stability On</button>
+                    <button type="button" class="btn btn-success" ng-click="stabilityOff()" style="width: 100%;margin-top: 5px;">Auto Stability Off</button>            
+
                 </div>
               </div>                
           </div>         

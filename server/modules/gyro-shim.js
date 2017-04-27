@@ -76,9 +76,9 @@ let temperature = raw=>{
 
 let gyroAngles = (reading)=>{
     return {
-        x : reading.gyro.pitch.angle/2 ,
-        z : reading.gyro.roll.angle/2 ,
-        y : -1*reading.gyro.yaw.angle/2 
+        x : reading.gyro.pitch.angle/1.8 ,
+        z : reading.gyro.roll.angle/1.8 ,
+        y : -1*reading.gyro.yaw.angle/1.8 
     }
 
     // x y z 

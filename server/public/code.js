@@ -535,7 +535,8 @@ app.controller('MotorControlCtrl',function($scope){
             });
 
             socket.on('ir-status',function(value){
-                console.log('IR status -> ',value);
+                $scope.proximity = value;
+                console.log(typeof $scope.proximity);
             })
 
 
@@ -548,8 +549,16 @@ app.controller('MotorControlCtrl',function($scope){
                     gauge.set($scope.currTemp.celsius);
                     // Update temperature values here
                 }
+
             });
 
+            $scope.stabilityOn = function(){
+ 				socket.emit('auto-stability');
+            }
+
+            $scope.stabilityOff = function(){
+				socket.emit('auto-stability-off');
+            }
             let missionCtrl = {
                 init : function(){
                     socket.on('mission-status',function(missionName,event){

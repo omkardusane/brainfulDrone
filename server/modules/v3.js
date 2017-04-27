@@ -9,9 +9,9 @@ let io = null ;
 
 let speeds = {max : 120 , off : 30 , min : 50};
 
-let auto_stability_times = { delay : 300 , out : 300 };
-let auto_stability_speeds = { off : 30 , min : 40 , mid : 60 , max :90};
-let auto_stability_controller = { on :false };
+let auto_stability_times = { delay : 250 , out : 300 };
+let auto_stability_speeds = { off : 30 , min : 40 , mid : 60 , max :90 , minIncr : 18 , midIncr: 30 , maxIncr : 50 };
+let auto_stability_controller = { on :false , intervalObject: null};
 
 var throttleDelays = 500 ;
 
@@ -372,67 +372,89 @@ module.exports =  {
              */
             motor.haltAll();
             let intervalHandler = ()=>{
-                let d = gyro.currentReadings
+                let d = gyro.currentReadings;
                 if(d && auto_stability_controller.on){
-                    //console.log('--> ',d);
                     let y = d.y;
-                    if(x<10 && x>-10){
-
-                    }else{
-                        
+                    
+                    let newSpeeds = [auto_stability_speeds.off,auto_stability_speeds.off,auto_stability_speeds.off,auto_stability_speeds.off] ;
+                    if(y>30){ // add 1 and 4 to lift back up
+                        newSpeeds[0]+= auto_stability_speeds.maxIncr ;
+                        newSpeeds[3]+= auto_stability_speeds.maxIncr ;
+                    }else if(y>20){
+                        newSpeeds[0]+= auto_stability_speeds.midIncr ;
+                        newSpeeds[3]+= auto_stability_speeds.midIncr ;
+                    }else if(y>12){
+                        newSpeeds[0]+= auto_stability_speeds.minIncr ;
+                        newSpeeds[3]+= auto_stability_speeds.minIncr ;
+                    }else if(y<=12 && y>=-12 ){ 
+                        // nothing
+                    }else if(y>-20){    
+                        newSpeeds[1]+= auto_stability_speeds.minIncr ;
+                        newSpeeds[2]+= auto_stability_speeds.minIncr ;
+                    }else if(y>-30){
+                        newSpeeds[1]+= auto_stability_speeds.midIncr ;
+                        newSpeeds[2]+= auto_stability_speeds.midIncr ;
+                    }else if(y<-30){
+                        newSpeeds[1]+= auto_stability_speeds.maxIncr ;
+                        newSpeeds[2]+= auto_stability_speeds.maxIncr ;
                     }
-                    if(y>20){
-                      motor.multiThrottle([1,4],[auto_stability_speeds.max,auto_stability_speeds.max]);
-                      motor.multiThrottle([2,3],[auto_stability_speeds.min,auto_stability_speeds.min]);
-                    }else if(y>10){
-                      motor.multiThrottle([1,4],[auto_stability_speeds.mid,auto_stability_speeds.mid]);
-                      motor.multiThrottle([2,3],[auto_stability_speeds.min,auto_stability_speeds.min]);
-                    }else if(y>0){
-                      motor.multiThrottle([1,4],[auto_stability_speeds.min,auto_stability_speeds.min]);
-                      motor.multiThrottle([2,3],[auto_stability_speeds.min,auto_stability_speeds.min]);
-                    }else if(y>=-10){
-                      motor.multiThrottle([1,4],[auto_stability_speeds.min,auto_stability_speeds.min]);
-                      motor.multiThrottle([2,3],[auto_stability_speeds.mid,auto_stability_speeds.mid]);
-                    }else if(y<-10){
-                      motor.multiThrottle([1,4],[auto_stability_speeds.min,auto_stability_speeds.min]);
-                      motor.multiThrottle([2,3],[auto_stability_speeds.max,auto_stability_speeds.max]);
+
+                    y = d.x;
+                    if(y>30){ // ad to motor 1 and 2 to lift LEFT
+                        newSpeeds[0]+= auto_stability_speeds.maxIncr ;
+                        newSpeeds[1]+= auto_stability_speeds.maxIncr ;
+                    }else if(y>20){
+                        newSpeeds[0]+= auto_stability_speeds.midIncr ;
+                        newSpeeds[1]+= auto_stability_speeds.midIncr ;
+                    }else if(y>12){
+                        newSpeeds[0]+= auto_stability_speeds.minIncr ;
+                        newSpeeds[1]+= auto_stability_speeds.minIncr ;
+                    }else if(y<=12 && y>=-12 ){ 
+                        // nothing
+                    }else if(y>-20){    
+                        newSpeeds[3]+= auto_stability_speeds.minIncr ;
+                        newSpeeds[2]+= auto_stability_speeds.minIncr ;
+                    }else if(y>-30){
+                        newSpeeds[3]+= auto_stability_speeds.midIncr ;
+                        newSpeeds[2]+= auto_stability_speeds.midIncr ;
+                    }else if(y<-30){
+                        newSpeeds[3]+= auto_stability_speeds.maxIncr ;
+                        newSpeeds[2]+= auto_stability_speeds.maxIncr ;
                     }
 
-                    //let time = (new Date().getTime()) + auto_stability_times.out ;
-                    //while(new Date().getTime() < time){}
+                    // APPLY the changes
 
-                    // let x = d.x;
-                    // if(x>20){
-                    //   motor.multiThrottle([1,2],[auto_stability_speeds.max,auto_stability_speeds.max]);
-                    //   motor.multiThrottle([4,3],[auto_stability_speeds.min,auto_stability_speeds.min]);
-                    // }else if(x>10){
-                    //   motor.multiThrottle([1,2],[auto_stability_speeds.mid,auto_stability_speeds.mid]);
-                    //   motor.multiThrottle([4,3],[auto_stability_speeds.min,auto_stability_speeds.min]);
-                    // }else if(x>0){
-                    //   motor.multiThrottle([1,2],[auto_stability_speeds.min,auto_stability_speeds.min]);
-                    //   motor.multiThrottle([4,3],[auto_stability_speeds.min,auto_stability_speeds.min]);
-                    // }else if(x>=-10){
-                    //   motor.multiThrottle([1,2],[auto_stability_speeds.min,auto_stability_speeds.min]);
-                    //   motor.multiThrottle([4,3],[auto_stability_speeds.mid,auto_stability_speeds.mid]);
-                    // }else if(x<-10){
-                    //   motor.multiThrottle([1,2],[auto_stability_speeds.min,auto_stability_speeds.min]);
-                    //   motor.multiThrottle([4,3],[auto_stability_speeds.max,auto_stability_speeds.max]);
+                    motor.multiThrottle([1,2,3,4],newSpeeds);
+
+                    // if(y>20){
+                    //   motor.multiThrottle([1,4],[auto_stability_speeds.max,auto_stability_speeds.max]);
+                    //   motor.multiThrottle([2,3],[auto_stability_speeds.min,auto_stability_speeds.min]);
+                    // }else if(y>10){
+                    //   motor.multiThrottle([1,4],[auto_stability_speeds.mid,auto_stability_speeds.mid]);
+                    //   motor.multiThrottle([2,3],[auto_stability_speeds.min,auto_stability_speeds.min]);
+                    // }else if(y>0){
+                    //   motor.multiThrottle([1,4],[auto_stability_speeds.min,auto_stability_speeds.min]);
+                    //   motor.multiThrottle([2,3],[auto_stability_speeds.min,auto_stability_speeds.min]);
+                    // }else if(y>=-10){
+                    //   motor.multiThrottle([1,4],[auto_stability_speeds.min,auto_stability_speeds.min]);
+                    //   motor.multiThrottle([2,3],[auto_stability_speeds.mid,auto_stability_speeds.mid]);
+                    // }else if(y<-10){
+                    //   motor.multiThrottle([1,4],[auto_stability_speeds.min,auto_stability_speeds.min]);
+                    //   motor.multiThrottle([2,3],[auto_stability_speeds.max,auto_stability_speeds.max]);
                     // }
 
-                    //time = (new Date().getTime()) + auto_stability_times.out ;
-                    //while(new Date().getTime() < time){}
-                    
+                }else{
+                       motor.haltAll();
                 }
             };
             auto_stability_controller.on = true ;
-            // while(auto_stability_controller.on){
-            //     intervalHandler();
-            // }
-            let interval = setInterval(intervalHandler, auto_stability_times.delay );
+            auto_stability_controller.intervalObject = setInterval(intervalHandler, auto_stability_times.delay );
         });
-        
+
         client.on('auto-stability-off',function(){
             auto_stability_controller.on = false;
+            clearInterval(auto_stability_controller.intervalObject);
+            motor.haltAll();
         });
 
     }
